@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.orion.OrionController">
+    
+    <!-- Menu Bar -->
+    <top>
+        <MenuBar>
+            <Menu text="File">
+                <MenuItem text="New" onAction="#handleNew" accelerator="Ctrl+N"/>
+                <MenuItem text="Open" onAction="#handleOpen" accelerator="Ctrl+O"/>
+                <MenuItem text="Save" onAction="#handleSave" accelerator="Ctrl+S"/>
+                <MenuItem text="Save As" onAction="#handleSaveAs" accelerator="Ctrl+Shift+S"/>
+                <SeparatorMenuItem/>
+                <MenuItem text="Exit" onAction="#handleExit" accelerator="Ctrl+Q"/>
+            </Menu>
+            <Menu text="Edit">
+                <MenuItem text="Cut" accelerator="Ctrl+X"/>
+                <MenuItem text="Copy" accelerator="Ctrl+C"/>
+                <MenuItem text="Paste" accelerator="Ctrl+V"/>
+            </Menu>
+            <Menu text="Run">
+                <MenuItem text="Run Code" onAction="#handleRun" accelerator="F5"/>
+            </Menu>
+            <Menu text="View">
+                <MenuItem text="Toggle Console" onAction="#handleToggleConsole"/>
+            </Menu>
+        </MenuBar>
+    </top>
+    
+    <!-- Main Content Area -->
+    <center>
+        <SplitPane fx:id="splitPane" orientation="VERTICAL" dividerPositions="0.7">
+            <!-- Code Editor -->
+            <TextArea fx:id="codeArea" 
+                     style="-fx-font-family: 'Consolas', monospace; -fx-font-size: 14px;"
+                     promptText="Write your code here..."/>
+            
+            <!-- Console Output -->
+            <TextArea fx:id="consoleArea" 
+                     editable="false"
+                     style="-fx-font-family: 'Consolas', monospace; -fx-font-size: 12px; -fx-control-inner-background: #1e1e1e; -fx-text-fill: #d4d4d4;"
+                     promptText="Console output will appear here...">
+            </TextArea>
+        </SplitPane>
+    </center>
+    
+    <!-- Status Bar -->
+    <bottom>
+        <HBox style="-fx-background-color: #e0e0e0; -fx-padding: 5;">
+            <Label fx:id="statusLabel" text="Ready"/>
+        </HBox>
+    </bottom>
+    
+</BorderPane>

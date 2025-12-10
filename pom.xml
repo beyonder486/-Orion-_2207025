@@ -29,6 +29,17 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.fxml</include>
+                    <include>**/*.css</include>
+                    <include>**/*.png</include>
+                    <include>**/*.jpg</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.openjfx</groupId>
@@ -36,10 +47,6 @@
                 <version>0.0.8</version>
                 <configuration>
                     <mainClass>com.orion.OrionApp</mainClass>
-                    <options>
-                        <option>--add-exports</option>
-                        <option>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</option>
-                    </options>
                 </configuration>
             </plugin>
         </plugins>

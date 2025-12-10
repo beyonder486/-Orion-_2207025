@@ -12,6 +12,10 @@ public class CodeRunner {
         }
 
         // Get command based on file extension
+        if (filePath.endsWith(".c") || filePath.endsWith(".cpp")) {
+            return compileAndRunCppOrC(filePath);
+        }
+
         String[] command = getCommand(filePath);
 
         // Execute the code
@@ -37,19 +41,63 @@ public class CodeRunner {
         return output.toString();
     }
 
+    private static String compileAndRunCppOrC(String filePath) throws IOException, InterruptedException {
+        StringBuilder output = new StringBuilder();
+        
+        // Determine compiler
+        String compiler = filePath.endsWith(".cpp") ? "g++" : "gcc";
+        String outputExe = "output.exe";
+        
+        // Step 1: Compile
+        ProcessBuilder compileBuilder = new ProcessBuilder(compiler, filePath, "-o", outputExe);
+        compileBuilder.redirectErrorStream(true);
+        Process compileProcess = compileBuilder.start();
+        
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(compileProcess.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+        }
+        
+        int compileExitCode = compileProcess.waitFor();
+        if (compileExitCode != 0) {
+            output.append("\nCompilation failed with exit code: ").append(compileExitCode);
+            return output.toString();
+        }
+        
+        output.append("Compilation successful!\n");
+        output.append("=".repeat(30)).append("\n");
+        
+        // Step 2: Run
+        ProcessBuilder runBuilder = new ProcessBuilder(outputExe);
+        runBuilder.redirectErrorStream(true);
+        Process runProcess = runBuilder.start();
+        
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(runProcess.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+        }
+        
+        int runExitCode = runProcess.waitFor();
+        if (runExitCode != 0) {
+            output.append("\nProgram exited with code: ").append(runExitCode);
+        }
+        
+        return output.toString();
+    }
+
     private static String[] getCommand(String filePath) {
         if (filePath.endsWith(".py")) {
             return new String[]{"python", filePath};
         } else if (filePath.endsWith(".java")) {
-            // For Java, we need to compile first then run
-            String className = new File(filePath).getName().replace(".java", "");
             return new String[]{"java", filePath};
         } else if (filePath.endsWith(".js")) {
             return new String[]{"node", filePath};
-        } else if (filePath.endsWith(".c")) {
-            return new String[]{"gcc", filePath, "-o", "output.exe", "&&", "output.exe"};
-        } else if (filePath.endsWith(".cpp")) {
-            return new String[]{"g++", filePath, "-o", "output.exe", "&&", "output.exe"};
         }
         throw new IllegalArgumentException("Unsupported file type: " + filePath);
     }
