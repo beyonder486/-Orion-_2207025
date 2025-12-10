@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import org.fxmisc.richtext.CodeArea?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
             fx:controller="com.orion.OrionController">
@@ -36,9 +37,8 @@
     <center>
         <SplitPane fx:id="splitPane" orientation="VERTICAL" dividerPositions="0.7">
             <!-- Code Editor -->
-            <TextArea fx:id="codeArea" 
-                     style="-fx-font-family: 'Consolas', monospace; -fx-font-size: 14px;"
-                     promptText="Write your code here..."/>
+            <CodeArea fx:id="codeArea" 
+                     style="-fx-font-family: 'Consolas', monospace; -fx-font-size: 14px;"/>
             
             <!-- Console Output -->
             <TextArea fx:id="consoleArea" 

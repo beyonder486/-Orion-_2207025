@@ -1,0 +1,67 @@
+/* Syntax Highlighting Styles for Orion Code Editor */
+
+/* Keywords - Java, Python, C/C++, JavaScript */
+.keyword {
+    -fx-fill: #0000FF;
+    -fx-font-weight: bold;
+}
+
+/* String literals */
+.string {
+    -fx-fill: #CE9178;
+}
+
+/* Comments */
+.comment {
+    -fx-fill: #6A9955;
+    -fx-font-style: italic;
+}
+
+/* Brackets and parentheses */
+.paren {
+    -fx-fill: #FFD700;
+    -fx-font-weight: bold;
+}
+
+.brace {
+    -fx-fill: #FFD700;
+    -fx-font-weight: bold;
+}
+
+.bracket {
+    -fx-fill: #FFD700;
+    -fx-font-weight: bold;
+}
+
+/* Semicolons */
+.semicolon {
+    -fx-fill: #808080;
+}
+
+/* Numbers */
+.number {
+    -fx-fill: #B5CEA8;
+}
+
+/* Code Area base styling */
+.code-area {
+    -fx-background-color: white;
+    -fx-font-family: 'Consolas', 'Courier New', monospace;
+    -fx-font-size: 14px;
+}
+
+.code-area .text {
+    -fx-fill: black;
+}
+
+.code-area .paragraph-box {
+    -fx-background-color: #FFFFFF;
+}
+
+.code-area .caret {
+    -fx-stroke: #000000;
+}
+
+.code-area .selection {
+    -fx-fill: #B3D7FF;
+}

@@ -21,8 +21,9 @@ public class OrionApp extends Application {
             OrionController controller = loader.getController();
             controller.setStage(primaryStage);
             
-            // Create scene
+            // Create scene and load CSS
             Scene scene = new Scene(root, 900, 700);
+            scene.getStylesheets().add(getClass().getResource("/com/orion/syntax.css").toExternalForm());
             primaryStage.setTitle("Orion Code Editor");
             primaryStage.setScene(scene);
             primaryStage.show();
