@@ -88,11 +88,10 @@ public class SyntaxHighlighter {
             else if (matcher.group("COMMENT") != null) styleClass = "comment";
             else if (matcher.group("NUMBER") != null) styleClass = "number";
             else {
-                // Check for SEMICOLON only if it exists in the pattern
                 try {
                     if (matcher.group("SEMICOLON") != null) styleClass = "semicolon";
                 } catch (IllegalArgumentException e) {
-                    // SEMICOLON group doesn't exist in this pattern (Python)
+                    // SEMICOLON group doesn't exist in Python pattern
                 }
             }
 
@@ -110,7 +109,7 @@ public class SyntaxHighlighter {
         if (fileExtension.endsWith(".py")) {
             return PYTHON_PATTERN;
         } else {
-            return JAVA_PATTERN; // For .java, .c, .cpp, .js
+            return JAVA_PATTERN;
         }
     }
 }

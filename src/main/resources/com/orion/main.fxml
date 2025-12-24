@@ -30,22 +30,34 @@
             <Menu text="View">
                 <MenuItem text="Toggle Console" onAction="#handleToggleConsole"/>
             </Menu>
+            <Menu text="Settings">
+                <MenuItem text="Preferences" onAction="#handleSettings"/>
+            </Menu>
         </MenuBar>
     </top>
     
     <!-- Main Content Area -->
     <center>
-        <SplitPane fx:id="splitPane" orientation="VERTICAL" dividerPositions="0.7">
-            <!-- Code Editor -->
-            <CodeArea fx:id="codeArea" 
-                     style="-fx-font-family: 'Consolas', monospace; -fx-font-size: 14px;"/>
+        <SplitPane dividerPositions="0.2">
+            <!-- LEFT: File Explorer Sidebar -->
+            <VBox style="-fx-background-color: #252526; -fx-min-width: 150;">
+                <Label text="OPEN FILES" style="-fx-text-fill: white; -fx-padding: 5; -fx-font-weight: bold; -fx-font-size: 11px;"/>
+                <ListView fx:id="openFilesListView" style="-fx-background-color: #252526;"/>
+            </VBox>
             
-            <!-- Console Output -->
-            <TextArea fx:id="consoleArea" 
-                     editable="false"
-                     style="-fx-font-family: 'Consolas', monospace; -fx-font-size: 12px; -fx-control-inner-background: #1e1e1e; -fx-text-fill: #d4d4d4;"
-                     promptText="Console output will appear here...">
-            </TextArea>
+            <!-- RIGHT: Editor + Console -->
+            <SplitPane fx:id="splitPane" orientation="VERTICAL" dividerPositions="0.7">
+                <!-- Code Editor -->
+                <CodeArea fx:id="codeArea" 
+                         style="-fx-font-family: 'Consolas', monospace; -fx-font-size: 14px;"/>
+                
+                <!-- Console Output -->
+                <TextArea fx:id="consoleArea" 
+                         editable="false"
+                         style="-fx-font-family: 'Consolas', monospace; -fx-font-size: 12px; -fx-control-inner-background: #1e1e1e; -fx-text-fill: #d4d4d4;"
+                         promptText="Console output will appear here...">
+                </TextArea>
+            </SplitPane>
         </SplitPane>
     </center>
     
