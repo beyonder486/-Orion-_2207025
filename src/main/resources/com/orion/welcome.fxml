@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.media.MediaView?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.orion.WelcomeController">
+    <!-- Background Video -->
+    <MediaView fx:id="mediaView" fitWidth="800" fitHeight="600" preserveRatio="false"/>
+    
+    <!-- Welcome content overlay -->
+    <VBox alignment="CENTER" spacing="30" style="-fx-background-color: transparent;">
+        <Label fx:id="logo" text="ORION" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, #6496ff, 20, 0.7, 0, 0);">
+            <font>
+                <Font size="72"/>
+            </font>
+        </Label>
+        
+        <Label text="Code Editor" style="-fx-text-fill: #c8dcff; -fx-font-style: italic;">
+            <font>
+                <Font size="24"/>
+            </font>
+        </Label>
+        
+        <Button fx:id="enterButton" onAction="#handleEnter" text="Enter" 
+                style="-fx-background-color: #6496ff4d; -fx-text-fill: white; -fx-border-color: #96c8ffcc; -fx-border-width: 2; -fx-border-radius: 5; -fx-background-radius: 5; -fx-cursor: hand;">
+            <font>
+                <Font size="18"/>
+            </font>
+            <padding>
+                <Insets top="10" right="40" bottom="10" left="40"/>
+            </padding>
+        </Button>
+    </VBox>
+</StackPane>

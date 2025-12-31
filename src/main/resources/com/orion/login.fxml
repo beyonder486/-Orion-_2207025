@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.orion.LoginController"
+            style="-fx-background-color: #2b2b2b;">
+    
+    <center>
+        <VBox spacing="15" alignment="CENTER" maxWidth="400" style="-fx-background-color: #3c3f41; -fx-padding: 40; -fx-background-radius: 10;">
+            <!-- Title -->
+            <Label text="Orion Code Editor" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #ffffff;"/>
+            <Label fx:id="titleLabel" text="Sign In" style="-fx-font-size: 18px; -fx-text-fill: #bbbbbb; -fx-padding: 0 0 20 0;"/>
+            
+            <!-- Username Field -->
+            <VBox spacing="5">
+                <Label text="Username" style="-fx-text-fill: #bbbbbb;"/>
+                <TextField fx:id="usernameField" 
+                          promptText="Enter username"
+                          style="-fx-background-color: #2b2b2b; -fx-text-fill: #ffffff; -fx-prompt-text-fill: #888888; -fx-padding: 10;"/>
+            </VBox>
+            
+            <!-- Password Field -->
+            <VBox spacing="5">
+                <Label text="Password" style="-fx-text-fill: #bbbbbb;"/>
+                <PasswordField fx:id="passwordField" 
+                              promptText="Enter password"
+                              style="-fx-background-color: #2b2b2b; -fx-text-fill: #ffffff; -fx-prompt-text-fill: #888888; -fx-padding: 10;"
+                              onAction="#handleLogin"/>
+            </VBox>
+            
+            <!-- Confirm Password Field (for signup) -->
+            <VBox fx:id="confirmPasswordBox" spacing="5">
+                <Label text="Confirm Password" style="-fx-text-fill: #bbbbbb;"/>
+                <PasswordField fx:id="confirmPasswordField" 
+                              promptText="Confirm password"
+                              style="-fx-background-color: #2b2b2b; -fx-text-fill: #ffffff; -fx-prompt-text-fill: #888888; -fx-padding: 10;"
+                              onAction="#handleSignup"/>
+            </VBox>
+            
+            <!-- Error Label -->
+            <Label fx:id="errorLabel" textFill="#ff6b6b" style="-fx-font-size: 12px;"/>
+            
+            <!-- Login Button -->
+            <Button fx:id="loginButton" text="Login" 
+                    onAction="#handleLogin"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: #4a9eff; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 12; -fx-background-radius: 5;"/>
+            
+            <!-- Signup Button -->
+            <Button fx:id="signupButton" text="Sign Up" 
+                    onAction="#handleSignup"
+                    maxWidth="Infinity"
+                    visible="false"
+                    managed="false"
+                    style="-fx-background-color: #4a9eff; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 12; -fx-background-radius: 5;"/>
+            
+            <!-- Toggle Button -->
+            <Button fx:id="toggleButton" text="Don't have an account? Sign Up" 
+                    onAction="#handleToggleMode"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #4a9eff; -fx-font-size: 12px; -fx-border-color: transparent; -fx-cursor: hand; -fx-underline: true;"/>
+        </VBox>
+    </center>
+    
+</BorderPane>

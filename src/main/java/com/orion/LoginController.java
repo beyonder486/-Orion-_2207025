@@ -5,30 +5,35 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.SQLException;
 
 public class LoginController {
 
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
+    @FXML private PasswordField confirmPasswordField;
     @FXML private Label errorLabel;
+    @FXML private Label titleLabel;
+    @FXML private Button loginButton;
+    @FXML private Button signupButton;
+    @FXML private Button toggleButton;
+    @FXML private VBox confirmPasswordBox;
 
-    // Simple in-memory user database (replace with real authentication later)
-    private static final Map<String, String> USERS = new HashMap<>();
-    
-    static {
-        USERS.put("admin", "admin");
-        USERS.put("user", "pass");
-        USERS.put("dev", "dev123");
-    }
+    private boolean isSignupMode = false;
 
     @FXML
     public void initialize() {
         // Clear error label initially
         errorLabel.setText("");
+        
+        // Hide confirm password field initially (login mode)
+        if (confirmPasswordBox != null) {
+            confirmPasswordBox.setVisible(false);
+            confirmPasswordBox.setManaged(false);
+        }
         
         // Focus on username field
         usernameField.requestFocus();
@@ -53,26 +58,109 @@ public class LoginController {
             return;
         }
         
-        // Authenticate
-        if (authenticate(username, password)) {
-            openMainEditor();
-        } else {
-            errorLabel.setText("Invalid username or password");
+        try {
+            // Authenticate using AuthenticationService
+            User user = AuthenticationService.login(username, password);
+            
+            // Set user session
+            UserSession.getInstance().setCurrentUser(user);
+            
+            // Open main editor
+            openMainEditor(username);
+        } catch (IllegalArgumentException e) {
+            errorLabel.setText(e.getMessage());
             passwordField.clear();
             passwordField.requestFocus();
+        } catch (SQLException e) {
+            errorLabel.setText("Database error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
     
-    private boolean authenticate(String username, String password) {
-        // Check against stored credentials
-        String storedPassword = USERS.get(username);
-        return storedPassword != null && storedPassword.equals(password);
+    @FXML
+    private void handleSignup() {
+        String username = usernameField.getText();
+        String password = passwordField.getText();
+        String confirmPassword = confirmPasswordField.getText();
+        
+        // Clear previous error
+        errorLabel.setText("");
+        
+        // Validate input
+        if (username == null || username.trim().isEmpty()) {
+            errorLabel.setText("Please enter a username");
+            return;
+        }
+        
+        if (password == null || password.length() < 4) {
+            errorLabel.setText("Password must be at least 4 characters");
+            return;
+        }
+        
+        if (!password.equals(confirmPassword)) {
+            errorLabel.setText("Passwords do not match");
+            confirmPasswordField.clear();
+            confirmPasswordField.requestFocus();
+            return;
+        }
+        
+        try {
+            // Create user using AuthenticationService
+            User user = AuthenticationService.signup(username, password);
+            
+            // Set user session
+            UserSession.getInstance().setCurrentUser(user);
+            
+            // Open main editor
+            openMainEditor(username);
+        } catch (IllegalArgumentException e) {
+            errorLabel.setText(e.getMessage());
+        } catch (SQLException e) {
+            errorLabel.setText("Database error: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     
-    private void openMainEditor() {
+    @FXML
+    private void handleToggleMode() {
+        isSignupMode = !isSignupMode;
+        
+        if (isSignupMode) {
+            // Switch to signup mode
+            titleLabel.setText("Sign Up");
+            loginButton.setVisible(false);
+            loginButton.setManaged(false);
+            signupButton.setVisible(true);
+            signupButton.setManaged(true);
+            confirmPasswordBox.setVisible(true);
+            confirmPasswordBox.setManaged(true);
+            toggleButton.setText("Already have an account? Login");
+        } else {
+            // Switch to login mode
+            titleLabel.setText("Sign In");
+            loginButton.setVisible(true);
+            loginButton.setManaged(true);
+            signupButton.setVisible(false);
+            signupButton.setManaged(false);
+            confirmPasswordBox.setVisible(false);
+            confirmPasswordBox.setManaged(false);
+            toggleButton.setText("Don't have an account? Sign Up");
+        }
+        
+        // Clear fields and error
+        usernameField.clear();
+        passwordField.clear();
+        if (confirmPasswordField != null) {
+            confirmPasswordField.clear();
+        }
+        errorLabel.setText("");
+        usernameField.requestFocus();
+    }
+    
+    private void openMainEditor(String username) {
         try {
             // Load main editor FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/orion/main.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("main.fxml"));
             Parent root = loader.load();
             
             // Get controller and pass stage reference
@@ -80,13 +168,17 @@ public class LoginController {
             Stage stage = (Stage) usernameField.getScene().getWindow();
             controller.setStage(stage);
             
-            // Create scene and load CSS
+            // Set username and restore session
+            controller.setUsername(username);
+            controller.restoreSession();
+            
+            // Create scene and clear any previous stylesheets
             Scene scene = new Scene(root, 900, 700);
-            scene.getStylesheets().add(getClass().getResource("/com/orion/syntax.css").toExternalForm());
+            scene.getStylesheets().clear(); // Clear welcome.css or any other CSS
             
             // Set the new scene
             stage.setScene(scene);
-            stage.setTitle("Orion Code Editor");
+            stage.setTitle("Orion Code Editor - " + username);
             
         } catch (Exception e) {
             errorLabel.setText("Error loading editor: " + e.getMessage());

@@ -1,0 +1,231 @@
+/* Monokai Vibrant Theme for Orion Code Editor */
+/* Based on VS Code Monokai Vibrant color scheme */
+
+/* Control flow keywords (if, else, for, while, return) */
+.control {
+    -fx-fill: #FF3F4F !important;  /* Monokai Vibrant red */
+    -fx-font-weight: bold;
+}
+
+/* Type keywords (int, void, class, interface) */
+.type {
+    -fx-fill: #19D1E5 !important;  /* Monokai Vibrant cyan */
+    -fx-font-weight: bold;
+}
+
+/* Storage modifiers (public, private, static, const) */
+.storage {
+    -fx-fill: #FF3F4F !important;  /* Monokai Vibrant red */
+    -fx-font-style: italic;
+}
+
+/* Language constants (True, False, None, null) */
+.constant {
+    -fx-fill: #E373CE !important;  /* Monokai Vibrant purple/pink */
+}
+
+/* Other keywords (import, from, extends) */
+.keyword {
+    -fx-fill: #FF3F4F !important;  /* Monokai Vibrant red */
+}
+
+/* String literals */
+.string {
+    -fx-fill: #FFD945 !important;  /* Monokai Vibrant yellow */
+}
+
+/* Comments */
+.comment {
+    -fx-fill: #5c6370 !important;  /* Monokai Vibrant gray */
+    -fx-font-style: italic;
+}
+
+/* Numbers */
+.number {
+    -fx-fill: #E373CE !important;  /* Monokai Vibrant pink */
+}
+
+/* Function and method names */
+.function {
+    -fx-fill: #81F900 !important;  /* Monokai Vibrant green */
+}
+
+/* Variables */
+.variable {
+    -fx-fill: #00a0e4 !important;  /* variable.readwrite */
+}
+
+/* Built-in functions and types */
+.builtin {
+    -fx-fill: #19D1E5 !important;  /* support.function, support.class */
+}
+
+/* Class names */
+.class {
+    -fx-fill: #00a0e4 !important;  /* entity.name.class, entity.name.type */
+}
+
+/* Operators */
+.operator {
+    -fx-fill: #FF3F4F !important;  /* keyword.operator */
+}
+
+/* Brackets and parentheses */
+.paren {
+    -fx-fill: #f8f8f0 !important;  /* punctuation.definition.parameters */
+}
+
+.brace {
+    -fx-fill: #f8f8f0 !important;  /* punctuation.definition.block */
+}
+
+.bracket {
+    -fx-fill: #f8f8f0 !important;  /* punctuation.definition.array */
+}
+
+/* Semicolons */
+.semicolon {
+    -fx-fill: #f8f8f0 !important;  /* punctuation.terminator */
+}
+
+/* Code Area base styling - Monokai Vibrant background and foreground */
+.code-area {
+    -fx-font-family: 'Consolas', 'Courier New', monospace;
+    -fx-font-size: 14px;
+    -fx-background-color: #16171D;  /* editor.background */
+    -fx-text-fill: #f8f8f0;  /* Default text color */
+}
+
+.code-area .text {
+    -fx-font-family: "Consolas", "Monaco", "Courier New", monospace;
+    -fx-fill: #f8f8f0;  /* Default foreground for unstyled text */
+}
+
+.code-area .paragraph-box {
+    -fx-background-color: #16171D;
+}
+
+.code-area .paragraph-text {
+    -fx-background-color: #16171D;
+}
+
+.code-area .content {
+    -fx-background-color: #16171D;
+}
+
+.code-area > .virtual-flow > .scroll-bar:vertical {
+    -fx-background-color: #16171D;
+}
+
+.code-area > .virtual-flow > .scroll-bar:horizontal {
+    -fx-background-color: #16171D;
+}
+
+.code-area .caret {
+    -fx-stroke: #ffffff;
+}
+
+.code-area .selection {
+    -fx-fill: #264f78;  /* editor.selectionBackground */
+}
+
+/* Line numbers */
+.code-area .lineno {
+    -fx-background-color: #16171D;
+    -fx-fill: #858585;  /* editorLineNumber.foreground */
+}
+
+/* ANSI Terminal Styles */
+.ansi-bold {
+    -fx-font-weight: bold;
+}
+
+.ansi-italic {
+    -fx-font-style: italic;
+}
+
+.ansi-underline {
+    -fx-underline: true;
+}
+
+/* Terminal specific styles */
+.styled-text-area {
+    -fx-background-color: #16171D;  /* terminal.background */
+    -fx-text-fill: #f8f8f0;  /* terminal.foreground */
+}
+/* Force terminal text to be white */
+#terminalArea .text {
+    -fx-fill: white !important;
+}
+
+#terminalArea .paragraph-text {
+    -fx-fill: white !important;
+}
+
+/* MAIN.FXML TRANSPARENT TREEVIEW - For space background */
+#mainListView {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+    -fx-background-insets: 0;
+}
+
+#mainListView .virtual-flow,
+#mainListView .virtual-flow .clipped-container,
+#mainListView .virtual-flow .sheet {
+    -fx-background-color: transparent;
+}
+
+#mainListView .list-cell,
+#mainListView .list-cell:empty {
+    -fx-background-color: transparent;
+}
+
+.treeView {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+    -fx-background-insets: 0;
+}
+
+/* ScrollBar dark theme */
+.scroll-bar {
+    -fx-background-color: #1e1e1e;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #424242;
+    -fx-background-radius: 5px;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #4e4e4e;
+}
+
+.scroll-bar .track {
+    -fx-background-color: #1e1e1e;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: #1e1e1e;
+}
+
+/* Enhanced MenuBar Styling */
+.menu-bar {
+    -fx-background-color: #2d2d30;
+    -fx-border-color: #3c3c3c;
+    -fx-border-width: 0 0 1 0;
+}
+
+.menu-bar .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-padding: 5 10;
+}
+
+.menu-bar .menu:hover {
+    -fx-background-color: #3e3e42;
+}
+
+.menu-bar .menu:showing {
+    -fx-background-color: #094771;
+}

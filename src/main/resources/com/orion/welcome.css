@@ -1,0 +1,32 @@
+/* Welcome Page Styles - Completely separate from main.fxml */
+
+/* Root pane styling */
+#rootPane {
+    -fx-background-color: linear-gradient(to bottom, #0a0a1e, #050510);
+}
+
+/* Logo styling */
+#logo {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #6496ff, 20, 0.7, 0, 0);
+}
+
+/* Button styling */
+#enterButton {
+    -fx-background-color: #6496ff4d;
+    -fx-text-fill: white;
+    -fx-border-color: #96c8ffcc;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+#enterButton:hover {
+    -fx-background-color: #6496ff80;
+}
+
+#enterButton:pressed {
+    -fx-background-color: #6496ffb3;
+}
