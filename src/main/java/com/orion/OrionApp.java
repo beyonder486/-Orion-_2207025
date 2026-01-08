@@ -1,6 +1,7 @@
 package com.orion;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -9,23 +10,79 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class OrionApp extends Application {
+    
+    private WelcomeController welcomeController;
 
     @Override
     public void start(Stage primaryStage) {
+        // Initialize database
+        DatabaseManager.initialize();
+        
+        // Initialize Firebase (optional - will work offline if credentials not found)
         try {
-            // Load FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/orion/main.fxml"));
+            FirebaseService.getInstance().initialize();
+            System.out.println("Firebase collaboration features enabled");
+        } catch (Exception e) {
+            System.out.println("Firebase not configured - collaboration features disabled");
+            System.out.println("To enable: place firebase-credentials.json in resources folder");
+        }
+        
+        try {
+            // Load Welcome FXML (with space animation)
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/orion/welcome.fxml"));
             Parent root = loader.load();
             
-            // Get controller and pass stage reference
-            OrionController controller = loader.getController();
-            controller.setStage(primaryStage);
+            // Get the welcome controller for cleanup
+            welcomeController = loader.getController();
             
-            // Create scene and load CSS
-            Scene scene = new Scene(root, 900, 700);
-            scene.getStylesheets().add(getClass().getResource("/com/orion/syntax.css").toExternalForm());
-            primaryStage.setTitle("Orion Code Editor");
+            // Create scene for welcome screen
+            Scene scene = new Scene(root, 800, 600);
+            primaryStage.setTitle("Orion");
             primaryStage.setScene(scene);
+            
+            // Add close handler to save session and close database
+            primaryStage.setOnCloseRequest(event -> {
+                try {
+                    // Cleanup welcome controller resources
+                    if (welcomeController != null) {
+                        welcomeController.cleanup();
+                    }
+                    
+                    // Try to cleanup main controller if it exists
+                    Scene currentScene = primaryStage.getScene();
+                    if (currentScene != null && currentScene.getRoot() != null) {
+                        try {
+                            // Get controller from scene's user data if set
+                            Object controller = currentScene.getRoot().getUserData();
+                            if (controller instanceof OrionController) {
+                                ((OrionController) controller).cleanup();
+                            }
+                        } catch (Exception e) {
+                            System.err.println("Error cleaning up controller: " + e.getMessage());
+                        }
+                    }
+                    
+                    // Shutdown Firebase connections gracefully
+                    if (FirebaseService.getInstance().isInitialized()) {
+                        try {
+                            FirebaseService.getInstance().shutdown();
+                        } catch (Exception e) {
+                            System.err.println("Error during Firebase shutdown: " + e.getMessage());
+                        }
+                    }
+                    
+                    // Close database
+                    DatabaseManager.close();
+                    
+                    // Force exit to prevent hanging
+                    Platform.exit();
+                    System.exit(0);
+                } catch (Exception e) {
+                    System.err.println("Error during shutdown: " + e.getMessage());
+                    System.exit(0);
+                }
+            });
+            
             primaryStage.show();
             
         } catch (IOException e) {

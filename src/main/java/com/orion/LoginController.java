@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -12,6 +14,8 @@ import java.sql.SQLException;
 
 public class LoginController {
 
+    @FXML private StackPane rootPane;
+    @FXML private ImageView backgroundImage;
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private PasswordField confirmPasswordField;
@@ -26,6 +30,12 @@ public class LoginController {
 
     @FXML
     public void initialize() {
+        // Bind background image to window size
+        if (backgroundImage != null && rootPane != null) {
+            backgroundImage.fitWidthProperty().bind(rootPane.widthProperty());
+            backgroundImage.fitHeightProperty().bind(rootPane.heightProperty());
+        }
+        
         // Clear error label initially
         errorLabel.setText("");
         
@@ -175,6 +185,9 @@ public class LoginController {
             // Create scene and clear any previous stylesheets
             Scene scene = new Scene(root, 900, 700);
             scene.getStylesheets().clear(); // Clear welcome.css or any other CSS
+            
+            // Store controller reference for cleanup
+            root.setUserData(controller);
             
             // Set the new scene
             stage.setScene(scene);

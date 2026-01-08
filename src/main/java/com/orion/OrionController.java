@@ -55,6 +55,9 @@ public class OrionController {
     private String currentTheme = "Dark";
     private int currentFontSize = 14;
     
+    // User session
+    private String username;
+    
     // Terminal
     private TerminalTab terminal;
     private TabPane terminalTabPane;
@@ -168,6 +171,62 @@ public class OrionController {
         this.stage = stage;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    
+    public void restoreSession() {
+        if (username == null) return;
+        
+        int userId = UserSession.getInstance().getUserId();
+        if (userId == -1) return;
+        
+        // Load session data
+        SessionService.SessionData sessionData = SessionService.loadSession(userId);
+        
+        // Restore theme
+        if (sessionData.theme != null && !sessionData.theme.isEmpty()) {
+            currentTheme = sessionData.theme;
+            applyTheme(currentTheme);
+        }
+        
+        // Restore font size
+        if (sessionData.fontSize > 0) {
+            currentFontSize = sessionData.fontSize;
+            applyFontSize(currentFontSize);
+        }
+        
+        // Restore workspace folder
+        if (sessionData.lastWorkspace != null && !sessionData.lastWorkspace.isEmpty()) {
+            File workspaceFolder = new File(sessionData.lastWorkspace);
+            if (workspaceFolder.exists() && workspaceFolder.isDirectory()) {
+                currentFolder = workspaceFolder;
+                loadFolderIntoTree(workspaceFolder);
+                updateTerminalDirectory(workspaceFolder);
+            }
+        }
+        
+        // Restore last opened file
+        if (sessionData.lastFilePath != null && !sessionData.lastFilePath.isEmpty()) {
+            File lastFile = new File(sessionData.lastFilePath);
+            if (lastFile.exists() && lastFile.isFile()) {
+                openFile(lastFile);
+            }
+        }
+    }
+    
+    public void saveSession() {
+        if (username == null) return;
+        
+        int userId = UserSession.getInstance().getUserId();
+        if (userId == -1) return;
+        
+        String lastFilePath = currentFile != null ? currentFile.getAbsolutePath() : null;
+        String lastWorkspace = currentFolder != null ? currentFolder.getAbsolutePath() : null;
+        
+        SessionService.saveSession(userId, lastFilePath, lastWorkspace, currentTheme, currentFontSize);
+    }
+
     @FXML
     private void handleNew() {
         codeArea.clear();
@@ -236,6 +295,9 @@ public class OrionController {
             
             // Update terminal directory to file's parent directory
             updateTerminalDirectory(file.getParentFile());
+            
+            // Save session
+            saveSession();
         } catch (IOException e) {
             showError("Error opening file: " + e.getMessage());
         }
@@ -274,8 +336,40 @@ public class OrionController {
         try {
             Files.writeString(file.toPath(), codeArea.getText());
             statusLabel.setText("Saved: " + file.getName());
+            
+            // Save session
+            saveSession();
         } catch (IOException e) {
             showError("Error saving file: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleCloseFile() {
+        if (currentFile == null) {
+            statusLabel.setText("No file to close");
+            return;
+        }
+        
+        String fileName = currentFile.getName();
+        
+        // Remove from open files list
+        if (openFilesListView != null) {
+            openFiles.remove(fileName);
+            fileContents.remove(fileName);
+            fileObjects.remove(fileName);
+        }
+        
+        // Clear the editor
+        codeArea.clear();
+        currentFile = null;
+        statusLabel.setText("Closed: " + fileName);
+        stage.setTitle("Orion Code Editor - Untitled");
+        
+        // If there are other open files, switch to the first one
+        if (!openFiles.isEmpty()) {
+            String nextFile = openFiles.get(0);
+            switchToFile(nextFile);
         }
     }
 
