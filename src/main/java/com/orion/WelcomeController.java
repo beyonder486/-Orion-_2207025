@@ -23,8 +23,10 @@ public class WelcomeController {
     @FXML private MediaView mediaView;
     @FXML private Button enterButton;
     @FXML private Label logo;
+    @FXML private Label typingLabel;
 
     private MediaPlayer mediaPlayer;
+    private Timeline typingTimeline;
 
     /* ================= INIT ================= */
 
@@ -44,6 +46,9 @@ public class WelcomeController {
         
         // Animate logo
         animateLogo();
+        
+        // Start typing animation
+        startTypingAnimation();
 
         // Fade in effect
         rootPane.setOpacity(0);
@@ -98,6 +103,59 @@ public class WelcomeController {
         new ParallelTransition(fade, scale).play();
     }
 
+    /* ================= TYPING ANIMATION ================= */
+
+    private void startTypingAnimation() {
+        String textToType = "The Code Editor You Deserve";
+        final int[] currentIndex = {0};
+        
+        // Clear the label initially
+        typingLabel.setText("");
+        
+        // Create timeline for typing effect
+        if (typingTimeline != null) {
+            typingTimeline.stop();
+        }
+        typingTimeline = new Timeline();
+        
+        // Add keyframes for each character
+        for (int i = 0; i <= textToType.length(); i++) {
+            final int index = i;
+            KeyFrame keyFrame = new KeyFrame(
+                Duration.millis(2500 + i * 100), // Start after logo animation (2.5s delay)
+                event -> {
+                    if (index <= textToType.length()) {
+                        typingLabel.setText(textToType.substring(0, index));
+                    }
+                }
+            );
+            typingTimeline.getKeyFrames().add(keyFrame);
+        }
+        
+        // Add blinking cursor effect
+        Timeline cursorBlink = new Timeline(
+            new KeyFrame(Duration.millis(0), e -> typingLabel.setText(typingLabel.getText())),
+            new KeyFrame(Duration.millis(500), e -> {
+                String current = typingLabel.getText();
+                if (current.endsWith("|")) {
+                    typingLabel.setText(current.substring(0, current.length() - 1));
+                } else {
+                    typingLabel.setText(current + "|");
+                }
+            })
+        );
+        cursorBlink.setCycleCount(Timeline.INDEFINITE);
+        
+        // Start typing after a delay
+        typingTimeline.setOnFinished(e -> {
+            // Add cursor and start blinking
+            typingLabel.setText(textToType + "|");
+            cursorBlink.play();
+        });
+        
+        typingTimeline.play();
+    }
+
     /* ================= VIDEO CLEANUP ================= */
 
     private void stopVideo() {
@@ -106,12 +164,22 @@ public class WelcomeController {
             mediaPlayer.dispose();
         }
     }
+    
+    public void cleanup() {
+        // Stop all animations
+        if (typingTimeline != null) {
+            typingTimeline.stop();
+        }
+        
+        // Stop video
+        stopVideo();
+    }
 
     /* ================= ENTER ================= */
 
     @FXML
     private void handleEnter() {
-        stopVideo();
+        cleanup();
         try {
             Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
             Stage stage = (Stage) enterButton.getScene().getWindow();
