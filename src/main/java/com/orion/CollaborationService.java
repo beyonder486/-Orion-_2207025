@@ -27,6 +27,9 @@ public class CollaborationService {
     // Current project context
     private String currentProjectId;
     private String currentUserId;
+    
+    // Cache of current file contents for diff computation
+    private final Map<String, String> fileContentCache = new ConcurrentHashMap<>();
 
     public CollaborationService() {
         this.firestore = FirebaseService.getInstance().getFirestore();
@@ -100,18 +103,58 @@ public class CollaborationService {
     }
 
     /**
-     * Update file content in Firestore.
-     * This will trigger listeners for other users.
+     * Update file content in Firestore using delta-based approach.
+     * Only stores the changes (diff) instead of full content.
      * 
      * @param filePath Relative file path
-     * @param content New file content
+     * @param newContent New file content
+     * @param username Username of the person making the change
      */
-    public void updateFileContent(String filePath, String content) {
+    public void updateFileContent(String filePath, String newContent, String username) {
         if (currentProjectId == null || currentUserId == null) {
             System.err.println("Project not initialized.");
             return;
         }
         
+        // Get previous content from SQLite (last saved state)
+        String oldContent = DatabaseManager.getFileSnapshot(currentProjectId, filePath);
+        if (oldContent == null) {
+            oldContent = "";
+        }
+        
+        // Compute diff between last saved state and new content
+        DiffUtils.DiffResult diffResult = DiffUtils.computeDiff(oldContent, newContent);
+        
+        // Only save if there are actual changes
+        if (!diffResult.hasChanges()) {
+            System.out.println("No changes detected for file: " + filePath);
+            return;
+        }
+        
+        System.out.println("Changes detected: +" + diffResult.getLinesAdded() + " -" + diffResult.getLinesRemoved());
+        
+        // Save new content to SQLite as the new baseline
+        DatabaseManager.saveFileSnapshot(currentProjectId, filePath, newContent);
+        
+        // Update in-memory cache for real-time sync
+        fileContentCache.put(filePath, newContent);
+        
+        // Save ONLY the delta/changes to Firebase history
+        ChangeHistory change = new ChangeHistory(
+            currentProjectId, 
+            filePath, 
+            currentUserId, 
+            username,
+            oldContent.isEmpty() ? ChangeHistory.ChangeType.CREATE : ChangeHistory.ChangeType.MODIFY,
+            diffResult.getDiff(),
+            diffResult.getLinesAdded(),
+            diffResult.getLinesRemoved()
+        );
+        
+        saveChangeHistory(change);
+        
+        // For real-time sync, update the file document with latest content
+        // (needed for new collaborators to get the current state)
         DocumentReference fileDoc = firestore.collection(PROJECTS_COLLECTION)
                 .document(currentProjectId)
                 .collection(FILES_SUBCOLLECTION)
@@ -119,11 +162,44 @@ public class CollaborationService {
         
         Map<String, Object> fileData = new HashMap<>();
         fileData.put("path", filePath);
-        fileData.put("content", content);
+        fileData.put("content", newContent); // Current state for sync
         fileData.put("lastModifiedBy", currentUserId);
         fileData.put("lastModifiedAt", FieldValue.serverTimestamp());
         
         fileDoc.set(fileData, SetOptions.merge());
+    }
+    
+    /**
+     * Save change history to Firestore.
+     */
+    private void saveChangeHistory(ChangeHistory change) {
+        CollectionReference historyRef = firestore.collection(PROJECTS_COLLECTION)
+                .document(currentProjectId)
+                .collection("changeHistory");
+        
+        Map<String, Object> historyData = new HashMap<>();
+        historyData.put("projectId", change.getProjectId());
+        historyData.put("filePath", change.getFilePath());
+        historyData.put("userId", change.getUserId());
+        historyData.put("username", change.getUsername());
+        historyData.put("timestamp", FieldValue.serverTimestamp());
+        historyData.put("changeType", change.getChangeType().toString());
+        historyData.put("delta", change.getDelta());
+        historyData.put("linesAdded", change.getLinesAdded());
+        historyData.put("linesRemoved", change.getLinesRemoved());
+        
+        historyRef.add(historyData);
+    }
+    
+    /**
+     * Load file content into cache for diff computation.
+     */
+    public void loadFileIntoCache(String filePath, String content) {
+        fileContentCache.put(filePath, content);
+        // Also save to SQLite as baseline
+        if (currentProjectId != null) {
+            DatabaseManager.saveFileSnapshot(currentProjectId, filePath, content);
+        }
     }
 
     /**
@@ -249,17 +325,42 @@ public class CollaborationService {
      */
     public void leaveProject() {
         if (currentProjectId != null && currentUserId != null) {
-            projectService.updateMemberPresence(currentProjectId, currentUserId, 
-                    false, null, 0);
+            System.out.println("Leaving project: " + currentProjectId);
             
-            // Remove all listeners
-            fileListeners.values().forEach(ListenerRegistration::remove);
+            // Set user as offline
+            try {
+                projectService.updateMemberPresence(currentProjectId, currentUserId, 
+                        false, null, 0);
+            } catch (Exception e) {
+                System.err.println("Error updating presence: " + e.getMessage());
+            }
+            
+            // Remove all file listeners
+            System.out.println("Removing " + fileListeners.size() + " file listeners...");
+            fileListeners.values().forEach(listener -> {
+                try {
+                    listener.remove();
+                } catch (Exception e) {
+                    System.err.println("Error removing file listener: " + e.getMessage());
+                }
+            });
             fileListeners.clear();
             
-            memberListeners.values().forEach(ListenerRegistration::remove);
+            // Remove all member listeners
+            System.out.println("Removing " + memberListeners.size() + " member listeners...");
+            memberListeners.values().forEach(listener -> {
+                try {
+                    listener.remove();
+                } catch (Exception e) {
+                    System.err.println("Error removing member listener: " + e.getMessage());
+                }
+            });
             memberListeners.clear();
             
-            System.out.println("Left project: " + currentProjectId);
+            // Clear cache
+            fileContentCache.clear();
+            
+            System.out.println("Left project successfully");
             currentProjectId = null;
             currentUserId = null;
         }
@@ -269,7 +370,9 @@ public class CollaborationService {
      * Clean up all listeners and connections.
      */
     public void shutdown() {
+        System.out.println("Shutting down CollaborationService...");
         leaveProject();
+        System.out.println("CollaborationService shutdown complete");
     }
 
     /**

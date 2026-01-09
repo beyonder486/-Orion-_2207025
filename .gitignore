@@ -30,3 +30,9 @@ target/
 .idea/
 *.iml
 *.iws
+*.exe
+
+# Firebase credentials (KEEP SECURE - DO NOT COMMIT)
+firebase-credentials.json
+**/firebase-credentials.json
+src/main/resources/firebase-credentials.json
