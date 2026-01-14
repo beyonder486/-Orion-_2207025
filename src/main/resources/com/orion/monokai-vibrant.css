@@ -162,28 +162,85 @@
     -fx-fill: white !important;
 }
 
-/* MAIN.FXML TRANSPARENT TREEVIEW - For space background */
+/* MAIN.FXML MODERN DARK LIST VIEW - Open Files */
 #mainListView {
-    -fx-background-color: transparent;
-    -fx-control-inner-background: transparent;
+    -fx-background-color: #1e1e1e;
+    -fx-control-inner-background: #1e1e1e;
     -fx-background-insets: 0;
+    -fx-border-color: #3c3c3c;
+    -fx-border-width: 1 0 0 0;
 }
 
 #mainListView .virtual-flow,
 #mainListView .virtual-flow .clipped-container,
 #mainListView .virtual-flow .sheet {
-    -fx-background-color: transparent;
+    -fx-background-color: #1e1e1e;
 }
 
-#mainListView .list-cell,
+#mainListView .list-cell {
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: #cccccc;
+    -fx-padding: 8 12;
+    -fx-font-size: 13px;
+    -fx-font-family: 'Segoe UI', 'Consolas', monospace;
+    -fx-border-color: transparent transparent #2d2d30 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
 #mainListView .list-cell:empty {
-    -fx-background-color: transparent;
+    -fx-background-color: #1e1e1e;
+    -fx-border-color: transparent;
 }
 
-.treeView {
-    -fx-background-color: transparent;
-    -fx-control-inner-background: transparent;
+#mainListView .list-cell:hover {
+    -fx-background-color: #2a2d2e;
+    -fx-text-fill: #ffffff;
+    -fx-cursor: hand;
+}
+
+#mainListView .list-cell:selected {
+    -fx-background-color: #094771;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+#mainListView .list-cell:selected:hover {
+    -fx-background-color: #0e639c;
+    -fx-text-fill: #ffffff;
+}
+
+/* MODERN DARK TREE VIEW - File Explorer */
+.treeView,
+#mainTreeView {
+    -fx-background-color: #1e1e1e;
+    -fx-control-inner-background: #1e1e1e;
     -fx-background-insets: 0;
+}
+
+#mainTreeView .tree-cell {
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: #cccccc;
+    -fx-padding: 6 8;
+    -fx-font-size: 13px;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+#mainTreeView .tree-cell:hover {
+    -fx-background-color: #2a2d2e;
+    -fx-text-fill: #ffffff;
+}
+
+#mainTreeView .tree-cell:selected {
+    -fx-background-color: #094771;
+    -fx-text-fill: #ffffff;
+}
+
+#mainTreeView .tree-cell:selected:hover {
+    -fx-background-color: #0e639c;
+}
+
+#mainTreeView .tree-cell:empty {
+    -fx-background-color: #1e1e1e;
 }
 
 /* ScrollBar dark theme */
@@ -228,4 +285,65 @@
 
 .menu-bar .menu:showing {
     -fx-background-color: #094771;
+}
+
+/* Menu Items Styling */
+.context-menu {
+    -fx-background-color: #2d2d30;
+    -fx-background-radius: 0;
+    -fx-border-color: #3c3c3c;
+    -fx-border-width: 1;
+    -fx-padding: 1;
+}
+
+.menu-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+}
+
+.menu-item .label {
+    -fx-text-fill: #ffffff !important;
+    -fx-font-size: 13px;
+}
+
+.menu-item > .left-container > .label {
+    -fx-text-fill: #ffffff;
+}
+
+.menu-item > .label {
+    -fx-text-fill: #ffffff;
+}
+
+.menu-item:focused {
+    -fx-background-color: #094771;
+}
+
+.menu-item:focused .label {
+    -fx-text-fill: #ffffff;
+}
+
+.menu-item:hover {
+    -fx-background-color: #3e3e42;
+}
+
+.menu-item:hover .label {
+    -fx-text-fill: #ffffff;
+}
+
+.menu-item:disabled {
+    -fx-opacity: 0.5;
+}
+
+.menu-item:disabled .label {
+    -fx-text-fill: #888888;
+}
+
+/* Separator in menus */
+.separator-menu-item > .line {
+    -fx-border-color: #3c3c3c;
+}
+
+/* Accelerator text */
+.menu-item > .accelerator-text {
+    -fx-text-fill: #888888;
 }

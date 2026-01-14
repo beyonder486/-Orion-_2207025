@@ -14,13 +14,13 @@
     
     <!-- Welcome content overlay -->
     <VBox alignment="CENTER" spacing="30" style="-fx-background-color: transparent;">
-        <Label fx:id="logo" text="ORION" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, #6496ff, 20, 0.7, 0, 0);">
+        <Label fx:id="logo" text="ORION" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, #6496ff, 20, 0.7, 0, 0); -fx-font-style: italic; -fx-font-family: 'consolas';">
             <font>
                 <Font size="72"/>
             </font>
         </Label>
         
-        <Label text="Code Editor" style="-fx-text-fill: #c8dcff; -fx-font-style: italic;">
+        <Label fx:id="typingLabel" text="" style="-fx-text-fill: #c8dcff; -fx-font-style: italic;">
             <font>
                 <Font size="24"/>
             </font>

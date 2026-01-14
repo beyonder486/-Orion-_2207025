@@ -6,6 +6,7 @@ public class User {
     private int id;
     private String username;
     private String passwordHash;
+    private String firebaseUid;
     private LocalDateTime createdAt;
 
     public User() {
@@ -16,6 +17,14 @@ public class User {
         this.id = id;
         this.username = username;
         this.passwordHash = passwordHash;
+        this.createdAt = createdAt;
+    }
+
+    public User(int id, String username, String passwordHash, String firebaseUid, LocalDateTime createdAt) {
+        this.id = id;
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.firebaseUid = firebaseUid;
         this.createdAt = createdAt;
     }
 
@@ -49,5 +58,13 @@ public class User {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getFirebaseUid() {
+        return firebaseUid;
+    }
+
+    public void setFirebaseUid(String firebaseUid) {
+        this.firebaseUid = firebaseUid;
     }
 }

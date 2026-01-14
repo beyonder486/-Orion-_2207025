@@ -15,6 +15,9 @@ public class OrionApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        // Allow the app to close when last window is closed
+        Platform.setImplicitExit(true);
+        
         // Initialize database
         DatabaseManager.initialize();
         
@@ -42,45 +45,25 @@ public class OrionApp extends Application {
             
             // Add close handler to save session and close database
             primaryStage.setOnCloseRequest(event -> {
-                try {
-                    // Cleanup welcome controller resources
-                    if (welcomeController != null) {
-                        welcomeController.cleanup();
-                    }
-                    
-                    // Try to cleanup main controller if it exists
-                    Scene currentScene = primaryStage.getScene();
-                    if (currentScene != null && currentScene.getRoot() != null) {
-                        try {
-                            // Get controller from scene's user data if set
-                            Object controller = currentScene.getRoot().getUserData();
-                            if (controller instanceof OrionController) {
-                                ((OrionController) controller).cleanup();
-                            }
-                        } catch (Exception e) {
-                            System.err.println("Error cleaning up controller: " + e.getMessage());
-                        }
-                    }
-                    
-                    // Shutdown Firebase connections gracefully
-                    if (FirebaseService.getInstance().isInitialized()) {
-                        try {
+                System.out.println("Application closing...");
+                
+                // Do cleanup in background, don't block
+                new Thread(() -> {
+                    try {
+                        // Close database
+                        DatabaseManager.close();
+                        
+                        // Shutdown Firebase
+                        if (FirebaseService.getInstance().isInitialized()) {
                             FirebaseService.getInstance().shutdown();
-                        } catch (Exception e) {
-                            System.err.println("Error during Firebase shutdown: " + e.getMessage());
                         }
+                    } catch (Exception e) {
+                        // Ignore errors during shutdown
                     }
-                    
-                    // Close database
-                    DatabaseManager.close();
-                    
-                    // Force exit to prevent hanging
-                    Platform.exit();
-                    System.exit(0);
-                } catch (Exception e) {
-                    System.err.println("Error during shutdown: " + e.getMessage());
-                    System.exit(0);
-                }
+                }).start();
+                
+                // Just exit immediately - don't wait for cleanup
+                System.exit(0);
             });
             
             primaryStage.show();

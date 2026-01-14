@@ -182,6 +182,9 @@ public class LoginController {
             controller.setUsername(username);
             controller.restoreSession();
             
+            // Initialize pending projects listener
+            controller.initializePendingProjects();
+            
             // Create scene and clear any previous stylesheets
             Scene scene = new Scene(root, 900, 700);
             scene.getStylesheets().clear(); // Clear welcome.css or any other CSS

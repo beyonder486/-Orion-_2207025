@@ -80,7 +80,7 @@ public class AuthenticationService {
             try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int userId = generatedKeys.getInt(1);
-                    User user = new User(userId, username, passwordHash, LocalDateTime.now());
+                    User user = new User(userId, username, passwordHash, firebaseUid, LocalDateTime.now());
                     createInitialSession(userId);
                     return user;
                 }
@@ -146,9 +146,10 @@ public class AuthenticationService {
                         String localFirebaseUid = rs.getString("firebase_uid");
                         if (localFirebaseUid == null && firebaseUid != null) {
                             updateFirebaseUid(id, firebaseUid);
+                            localFirebaseUid = firebaseUid;
                         }
                         
-                        return new User(id, username, storedHash, createdAt);
+                        return new User(id, username, storedHash, localFirebaseUid, createdAt);
                     } else {
                         throw new IllegalArgumentException("Invalid username or password");
                     }
@@ -222,7 +223,7 @@ public class AuthenticationService {
             try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int userId = generatedKeys.getInt(1);
-                    User user = new User(userId, displayUsername, passwordHash, LocalDateTime.now());
+                    User user = new User(userId, displayUsername, passwordHash, firebaseUid, LocalDateTime.now());
                     createInitialSession(userId);
                     System.out.println("✅ Account synced from Firebase!");
                     return user;

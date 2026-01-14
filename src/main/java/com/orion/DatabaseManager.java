@@ -46,14 +46,36 @@ public class DatabaseManager {
                 last_workspace TEXT,
                 theme TEXT DEFAULT 'Dark',
                 font_size INTEGER DEFAULT 14,
+                current_project_id TEXT,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            )
+        """;
+        
+        String createFileSnapshotsTable = """
+            CREATE TABLE IF NOT EXISTS file_snapshots (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                project_id TEXT NOT NULL,
+                file_path TEXT NOT NULL,
+                content TEXT NOT NULL,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(project_id, file_path)
             )
         """;
 
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(createUsersTable);
             stmt.execute(createUserSessionsTable);
+            stmt.execute(createFileSnapshotsTable);
+            
+            // Add current_project_id column if it doesn't exist (for existing databases)
+            try {
+                stmt.execute("ALTER TABLE user_sessions ADD COLUMN current_project_id TEXT");
+                System.out.println("Added current_project_id column to user_sessions table");
+            } catch (SQLException e) {
+                // Column already exists, ignore
+            }
+            
             System.out.println("Database tables created successfully");
         }
     }
@@ -78,5 +100,38 @@ public class DatabaseManager {
         } catch (SQLException e) {
             System.err.println("Failed to close database: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Save file snapshot to database (last saved state)
+     */
+    public static void saveFileSnapshot(String projectId, String filePath, String content) {
+        String sql = "INSERT OR REPLACE INTO file_snapshots (project_id, file_path, content, updated_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)";
+        try (PreparedStatement pstmt = getConnection().prepareStatement(sql)) {
+            pstmt.setString(1, projectId);
+            pstmt.setString(2, filePath);
+            pstmt.setString(3, content);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Failed to save file snapshot: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Get last saved content of a file from database
+     */
+    public static String getFileSnapshot(String projectId, String filePath) {
+        String sql = "SELECT content FROM file_snapshots WHERE project_id = ? AND file_path = ?";
+        try (PreparedStatement pstmt = getConnection().prepareStatement(sql)) {
+            pstmt.setString(1, projectId);
+            pstmt.setString(2, filePath);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("content");
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to get file snapshot: " + e.getMessage());
+        }
+        return null;
     }
 }

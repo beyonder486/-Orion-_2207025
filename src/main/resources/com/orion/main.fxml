@@ -32,6 +32,16 @@
             <Menu text="Run">
                 <MenuItem text="Run Code" onAction="#handleRun" accelerator="F5"/>
             </Menu>
+            <Menu text="Collaborate">
+                <MenuItem text="My Projects" onAction="#handleMyProjects" accelerator="Ctrl+Shift+M"/>
+                <MenuItem text="Create Project" onAction="#handleCreateProject" accelerator="Ctrl+Shift+P"/>
+                <MenuItem text="Join Project" onAction="#handleJoinProject" accelerator="Ctrl+Shift+J"/>
+                <SeparatorMenuItem/>
+                <MenuItem text="View Online Members" onAction="#handleViewMembers"/>
+                <MenuItem text="View Change History" onAction="#handleViewChangeHistory"/>
+                <SeparatorMenuItem/>
+                <MenuItem text="Leave Project" onAction="#handleLeaveProject"/>
+            </Menu>
             <Menu text="View">
                 <MenuItem text="Toggle Terminal" onAction="#handleToggleTerminal"/>
                 <MenuItem text="Clear Terminal" onAction="#handleClearTerminal"/>
@@ -39,12 +49,15 @@
             <Menu text="Settings">
                 <MenuItem text="Preferences" onAction="#handleSettings"/>
             </Menu>
+            <Menu text="Account">
+                <MenuItem text="Logout" onAction="#handleLogout" accelerator="Ctrl+L"/>
+            </Menu>
         </MenuBar>
     </top>
     
     <!-- Main Content Area -->
     <center>
-        <SplitPane dividerPositions="0.2">
+        <SplitPane dividerPositions="0.2, 0.8">
             <!-- LEFT: File Explorer Sidebar - TRANSPARENT -->
             <VBox style="-fx-background-color: rgba(30, 30, 30, 0.3); -fx-min-width: 200; -fx-border-color: rgba(255, 255, 255, 0.2); -fx-border-width: 0 2 0 0;">
                 <!-- Explorer Header -->
@@ -68,7 +81,7 @@
                 </VBox>
             </VBox>
             
-            <!-- RIGHT: Editor + Console -->
+            <!-- CENTER: Editor + Console -->
             <SplitPane fx:id="splitPane" orientation="VERTICAL" dividerPositions="0.7">
                 <!-- Code Editor -->
                 <CodeArea fx:id="codeArea" styleClass="code-area"
@@ -77,6 +90,21 @@
                 <!-- Terminal Container -->
                 <AnchorPane fx:id="terminalPane" style="-fx-background-color: rgba(30, 30, 30, 0.85);"/>
             </SplitPane>
+            
+            <!-- RIGHT: Pending Projects Panel -->
+            <VBox style="-fx-background-color: rgba(30, 30, 30, 0.3); -fx-min-width: 250; -fx-max-width: 350; -fx-border-color: rgba(255, 255, 255, 0.2); -fx-border-width: 0 0 0 2;">
+                <!-- Pending Projects Header -->
+                <HBox style="-fx-background-color: rgba(45, 45, 48, 0.5); -fx-padding: 8 10; -fx-spacing: 8; -fx-alignment: center-left; -fx-border-color: rgba(255, 255, 255, 0.2); -fx-border-width: 0 0 1 0;">
+                    <Label text="📋" style="-fx-font-size: 14px;"/>
+                    <Label text="PENDING PROJECTS" style="-fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-font-size: 12px; -fx-font-family: 'Segoe UI', sans-serif; -fx-effect: dropshadow(gaussian, black, 5, 0.8, 0, 1);"/>
+                    <Label fx:id="pendingCountLabel" text="(0)" style="-fx-text-fill: #cccccc; -fx-font-size: 11px; -fx-font-family: 'Segoe UI', sans-serif;"/>
+                </HBox>
+                
+                <!-- Pending Projects List -->
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent;">
+                    <VBox fx:id="pendingProjectsContainer" spacing="8" style="-fx-padding: 10; -fx-background-color: transparent;"/>
+                </ScrollPane>
+            </VBox>
         </SplitPane>
     </center>
     

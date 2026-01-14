@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.fxmisc.richtext.CodeArea?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.orion.ChangeHistoryController"
+            style="-fx-background-color: #1e1e1e;">
+    
+    <!-- Top: Title and Controls -->
+    <top>
+        <VBox style="-fx-background-color: #2d2d30; -fx-padding: 15;">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="📊 Change History" 
+                       style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="🔄 Refresh" onAction="#handleRefresh" 
+                        style="-fx-background-color: #0e639c; -fx-text-fill: white; -fx-font-size: 12px;"/>
+                <Button text="📥 Export" onAction="#handleExport" 
+                        style="-fx-background-color: #0e639c; -fx-text-fill: white; -fx-font-size: 12px;"/>
+                <Button text="✕ Close" onAction="#handleClose" 
+                        style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 12px;"/>
+            </HBox>
+            
+            <Separator style="-fx-background-color: #3e3e42;">
+                <VBox.margin>
+                    <Insets top="10" bottom="10"/>
+                </VBox.margin>
+            </Separator>
+            
+            <!-- Statistics Panel -->
+            <HBox spacing="30" alignment="CENTER_LEFT" style="-fx-padding: 5;">
+                <Label fx:id="totalChangesLabel" text="Total Changes: 0" 
+                       style="-fx-text-fill: #4ec9b0; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                <Label fx:id="contributorsLabel" text="Contributors: 0" 
+                       style="-fx-text-fill: #4ec9b0; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                <Label fx:id="filesModifiedLabel" text="Files Modified: 0" 
+                       style="-fx-text-fill: #4ec9b0; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                <Label fx:id="linesAddedLabel" text="Lines Added: 0" 
+                       style="-fx-text-fill: #98c379; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                <Label fx:id="linesRemovedLabel" text="Lines Removed: 0" 
+                       style="-fx-text-fill: #e06c75; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+            </HBox>
+            
+            <Separator style="-fx-background-color: #3e3e42;">
+                <VBox.margin>
+                    <Insets top="10" bottom="10"/>
+                </VBox.margin>
+            </Separator>
+            
+            <!-- Filter Controls -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="🔍 Search:" style="-fx-text-fill: white; -fx-font-size: 12px;"/>
+                <TextField fx:id="searchField" promptText="Search by file or user..." 
+                           prefWidth="250"
+                           style="-fx-background-color: #3e3e42; -fx-text-fill: white; -fx-prompt-text-fill: #858585;"/>
+                
+                <Label text="Filter:" style="-fx-text-fill: white; -fx-font-size: 12px;">
+                    <HBox.margin>
+                        <Insets left="20"/>
+                    </HBox.margin>
+                </Label>
+                <ComboBox fx:id="filterComboBox" prefWidth="150"
+                          style="-fx-background-color: #3e3e42; -fx-text-fill: white;"/>
+            </HBox>
+        </VBox>
+    </top>
+    
+    <!-- Center: Split pane with table and diff viewer -->
+    <center>
+        <SplitPane dividerPositions="0.6" orientation="VERTICAL">
+            <!-- History Table -->
+            <VBox style="-fx-background-color: #252526; -fx-padding: 10;">
+                <Label text="Change Log" 
+                       style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 5;"/>
+                
+                <TableView fx:id="historyTable" VBox.vgrow="ALWAYS"
+                          style="-fx-background-color: #1e1e1e; -fx-control-inner-background: #1e1e1e;">
+                    <columns>
+                        <TableColumn fx:id="timestampColumn" text="Timestamp" prefWidth="150"/>
+                        <TableColumn fx:id="userColumn" text="User" prefWidth="120"/>
+                        <TableColumn fx:id="fileColumn" text="File Path" prefWidth="300"/>
+                        <TableColumn fx:id="typeColumn" text="Type" prefWidth="100"/>
+                        <TableColumn fx:id="changesColumn" text="Changes" prefWidth="100"/>
+                    </columns>
+                </TableView>
+            </VBox>
+            
+            <!-- Diff Viewer -->
+            <VBox style="-fx-background-color: #252526; -fx-padding: 10;">
+                <Label text="Change Details (Diff)" 
+                       style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 5;"/>
+                
+                <CodeArea fx:id="diffViewer" VBox.vgrow="ALWAYS"
+                         style="-fx-background-color: #1e1e1e; -fx-text-fill: #d4d4d4;"/>
+            </VBox>
+        </SplitPane>
+    </center>
+    
+    <!-- Bottom: Status bar -->
+    <bottom>
+        <HBox style="-fx-background-color: #007acc; -fx-padding: 8;">
+            <Label text="💡 Tip: Click on any change to view the detailed diff" 
+                   style="-fx-text-fill: white; -fx-font-size: 11px;"/>
+        </HBox>
+    </bottom>
+    
+</BorderPane>

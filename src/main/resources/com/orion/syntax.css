@@ -1,67 +1,130 @@
-/* Syntax Highlighting Styles for Orion Code Editor */
+/* Syntax Highlighting Styles for Orion Code Editor - Monokai Vibrant Theme */
 
 /* Keywords - Java, Python, C/C++, JavaScript */
 .keyword {
-    -fx-fill: #0000FF;
+    -fx-fill: #FF3F4F;  /* Monokai Vibrant red - keywords */
     -fx-font-weight: bold;
+}
+
+/* Built-in functions and types */
+.builtin {
+    -fx-fill: #19D1E5;  /* Monokai Vibrant light cyan - built-in functions */
+}
+
+/* Function and method names */
+.function {
+    -fx-fill: #81F900;  /* Monokai Vibrant green - function names */
+}
+
+/* Class names */
+.class {
+    -fx-fill: #00a0e4;  /* Monokai Vibrant cyan - class names */
 }
 
 /* String literals */
 .string {
-    -fx-fill: #CE9178;
+    -fx-fill: #FFD945;  /* Monokai Vibrant yellow - strings */
 }
 
 /* Comments */
 .comment {
-    -fx-fill: #6A9955;
+    -fx-fill: #5c6370;  /* Monokai Vibrant gray - comments */
     -fx-font-style: italic;
-}
-
-/* Brackets and parentheses */
-.paren {
-    -fx-fill: #FFD700;
-    -fx-font-weight: bold;
-}
-
-.brace {
-    -fx-fill: #FFD700;
-    -fx-font-weight: bold;
-}
-
-.bracket {
-    -fx-fill: #FFD700;
-    -fx-font-weight: bold;
-}
-
-/* Semicolons */
-.semicolon {
-    -fx-fill: #808080;
 }
 
 /* Numbers */
 .number {
-    -fx-fill: #B5CEA8;
+    -fx-fill: #E373CE;  /* Monokai Vibrant pink - numbers */
+}
+
+/* Operators */
+.operator {
+    -fx-fill: #FF3F4F;  /* Monokai Vibrant red - operators */
+}
+
+/* Brackets and parentheses */
+.paren {
+    -fx-fill: #f8f8f0;  /* Monokai Vibrant foreground - parentheses */
+}
+
+.brace {
+    -fx-fill: #f8f8f0;  /* Monokai Vibrant foreground - braces */
+}
+
+.bracket {
+    -fx-fill: #f8f8f0;  /* Monokai Vibrant foreground - brackets */
+}
+
+/* Semicolons */
+.semicolon {
+    -fx-fill: #f8f8f0;  /* Monokai Vibrant foreground - semicolons */
 }
 
 /* Code Area base styling */
 .code-area {
-    -fx-background-color: white;
     -fx-font-family: 'Consolas', 'Courier New', monospace;
     -fx-font-size: 14px;
 }
 
 .code-area .text {
-    -fx-fill: black;
+    -fx-font-family: "Consolas", "Monaco", "Courier New", monospace;
 }
 
 .code-area .paragraph-box {
-    -fx-background-color: #FFFFFF;
+    -fx-background-color: transparent;
 }
 
 .code-area .caret {
-    -fx-stroke: #000000;
+    -fx-stroke: #ffffff;
 }
 
 .code-area .selection {
-    -fx-fill: #B3D7FF;
+    -fx-fill: #264f78;
+}
+/* ANSI Terminal Styles */
+.ansi-bold {
+    -fx-font-weight: bold;
+}
+
+.ansi-italic {
+    -fx-font-style: italic;
+}
+
+.ansi-underline {
+    -fx-underline: true;
+}
+
+/* Terminal specific styles */
+.styled-text-area {
+    -fx-background-color: #1e1e1e;
+}
+
+.styled-text-area .text {
+    -fx-fill: #d4d4d4;
+    -fx-font-family: "Consolas", "Monaco", "Courier New", monospace;
+}
+
+.styled-text-area .paragraph-box {
+    -fx-background-color: transparent;
+}
+
+.styled-text-area .caret {
+    -fx-stroke: #ffffff;
+}
+
+.styled-text-area .selection {
+    -fx-fill: #264f78;
+}
+/* Line numbers */
+.lineno {
+    -fx-background-color: transparent;   /* match editor bg */
+    -fx-text-fill: #000982;          /* visible gray */
+    -fx-padding: 0 10 0 10;
+    -fx-font-family: "Consolas", monospace;
+    -fx-font-size: 14px;
+}
+
+/* Current line highlight (optional but cool) */
+.lineno.current {
+    -fx-text-fill: #ffffff;
 }

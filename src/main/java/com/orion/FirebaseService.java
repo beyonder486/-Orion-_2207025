@@ -133,11 +133,15 @@ public class FirebaseService {
     public void shutdown() {
         if (initialized) {
             try {
-                firestore.close();
+                System.out.println("Closing Firestore connection...");
+                if (firestore != null) {
+                    firestore.close();
+                }
                 initialized = false;
-                System.out.println("Firebase connection closed.");
+                System.out.println("Firebase connection closed successfully.");
             } catch (Exception e) {
                 System.err.println("Error closing Firebase: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }
